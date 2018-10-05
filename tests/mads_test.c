@@ -8,7 +8,6 @@
 
 int sum_test(long (*f)(long *, long))
 {
-	int;
 	int ret = 0;
 	int max_length = 1024 * 1024;
 	int len = 0;
