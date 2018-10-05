@@ -8,6 +8,7 @@ RM = rm
 
 LIB_BIN_DIR = bin
 TEST_BIN_DIR = test_bin
+PERF_BIN_DIR = perf_bin
 
 lib_name = math
 lib_file=lib$(lib_name)
@@ -19,6 +20,9 @@ asm_lib_objs = $(asm_source:.asm=.o)
 test_dir = tests
 test_source = mads_test.c
 test_objs = $(test_source:.c=)
+perf_dir = perf
+perf_source = sum_perf.c
+perf_objs = $(perf_source:.c=)
 
 default: lib_static
 
@@ -26,7 +30,7 @@ lib_static: $(lib_objs) $(asm_lib_objs)
 	$(AR) $(AR_FLAGS) $(LIB_BIN_DIR)/$(lib_file).a $(LIB_BIN_DIR)/$(lib_objs) $(LIB_BIN_DIR)/$(asm_lib_objs)
 
 tests: lib_static $(test_objs)
-
+perf: lib_static $(perf_objs)
 
 $(lib_objs): %.o: $(lib_dir)/%.c
 	mkdir -p $(LIB_BIN_DIR)
@@ -40,8 +44,13 @@ $(test_objs): %.o: $(test_dir)/%.c
 	mkdir -p $(TEST_BIN_DIR)
 	$(CC) $(CFLAGS)  $(test_dir)/$@.c -L$(LIB_BIN_DIR) -l$(lib_name) -o $(TEST_BIN_DIR)/$@
 
+$(perf_objs): %.o: $(perf_dir)/%.c
+	mkdir -p $(PERF_BIN_DIR)
+	$(CC) $(CFLAGS)  $(perf_dir)/$@.c -L$(LIB_BIN_DIR) -l$(lib_name) -o $(PERF_BIN_DIR)/$@
+
 .PHONY: lib_static tests clean
 
 clean:
 	$(RM) -rf $(LIB_BIN_DIR)
 	$(RM) -rf $(TEST_BIN_DIR)
+	$(RM) -rf $(PERF_BIN_DIR)
