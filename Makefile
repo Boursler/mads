@@ -1,5 +1,5 @@
 C = gcc # C compiler
-CFLAGS = -I$(lib_dir) -Os
+CFLAGS = -I$(lib_dir) -Os -g
 AS = nasm
 ASFLAGS= -f elf64
 AR = ar
