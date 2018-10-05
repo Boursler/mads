@@ -5,6 +5,33 @@
 #include <stdlib.h>
 
 #define RANDOMS 5
+
+int sum_test(long (*f)(long*, long)){
+	int ret = 0;
+	int max_length = 1024 * 1024;
+	int len = 0;
+	long* arr;
+	long i = 0;
+	int j = 0;
+	arr = malloc(max_length * sizeof(*arr));
+	if(arr == NULL){
+		return -1;
+	}
+	for(i = 0; i < RANDOMS; i++){
+		len = rand() % max_length;
+		for(j = 0; j < len; j++){
+			arr[j] = rand();
+		}
+
+		ret = ((*f)(arr,len) != sum_c(arr, len));
+		if(ret){
+			break;
+		}
+	}
+	free(arr);
+	return ret;
+ }
+
 int main(int argc, char **argv)
 {
 	int i = 0;
@@ -32,17 +59,14 @@ int main(int argc, char **argv)
 
 	printf("Test Passed\n");
 	printf("NASM sum test:");
-	for(i = 0; i < RANDOMS; i++){
-		long arr[5] = {rand(), rand(), rand(), rand(), rand()};
-		printf("assembly program output: %ld\n", sum(arr, 5));
-		printf("c program output: %ld\n", sum_c(arr,5));
-		ret = (sum(arr, 5) != sum_c(arr, 5));
-		if(ret)
-			goto test_error;
+	ret = sum_test(sum);
+	if(ret){
+		printf("failed");
+	} else{
 		printf("Passed\n");
-
-		}
+	}
 	return ret;
+
 
 test_error:
 	printf("Test Failed\n");
